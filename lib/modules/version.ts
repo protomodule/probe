@@ -15,9 +15,9 @@ type Version = {
 }
 
 export const defaults = Object.freeze({
-  file: "version.json",
-  route: "/version",
-  routeShort: "/__v",
+  versionFile: "version.json",
+  versionRoute: "/version",
+  versionShort: "/__v",
 })
 
 export type VersionSettings = Settings<typeof defaults>
@@ -36,10 +36,10 @@ export const router = (options: VersionOptions) => {
     ...options
   }
 
-  const versionFile = findVersionFile(require?.main?.filename || process.cwd(), settings.file)
+  const versionFile = findVersionFile(require?.main?.filename || process.cwd(), settings.versionFile)
   const versionInfo: Version | undefined = versionFile && require(versionFile)
 
   return Router()
-    .get(settings.route, (_, res) => res.json(versionInfo) )
-    .get(settings.routeShort, (_, res) => res.send(versionInfo?.version) )
+    .get(settings.versionRoute, (_, res) => res.json(versionInfo) )
+    .get(settings.versionShort, (_, res) => res.send(versionInfo?.version) )
 }
