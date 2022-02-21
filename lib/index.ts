@@ -5,6 +5,8 @@ import { defaults as metricsDefaults, middleware as metricsMiddleware } from "./
 import { defaults as requestLoggingDefaults, middleware as requestLoggingMiddleware } from "./modules/request-logging"
 import { Settings, Options } from "./settings"
 
+export { from, Env, fromEnv } from "./utils/config"
+export { str, bool, num, email, host, port, url, json  } from "envalid"
 export { log } from "./utils/logger"
 export { withMetricsOnly, withoutChangelog, withoutMetrics, withoutRequestLogging, withoutConsoleLog } from "./settings"
 export const withDefaults: Settings = Object.freeze({

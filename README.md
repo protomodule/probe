@@ -20,7 +20,7 @@ export const config = fromEnv({
 })
 ```
 
-In any other module you can import the singleton config:
+For more information on how to specify the schema for your environment variables continue reading [here](https://github.com/af/envalid). In any other module you can import the singleton config:
 
 ```
 import { config } from "./config"
