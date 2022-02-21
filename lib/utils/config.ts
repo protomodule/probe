@@ -1,8 +1,16 @@
 import "dotenv/config"
 import chalk from "chalk"
 import boxen from "boxen"
-import { ValidatorSpec, cleanEnv, str, port, CleanedEnvAccessors } from "envalid"
+import { ValidatorSpec, cleanEnv, str, port, CleanedEnvAccessors, makeValidator } from "envalid"
 import { log, LogLevel } from "./logger"
+
+export const yesNo = makeValidator(x => {
+  switch (x) {
+    case "yes": return true
+    case "no": return false
+  }
+  throw new Error(`Input "${x}" invalid. Expected value of "yes" or "no"`)
+})
 
 export type Schema<T> = { [K in keyof T]: ValidatorSpec<T[K]>; }
 
@@ -15,6 +23,8 @@ const defaults = {
 }
 
 const reporter = ({ errors } : { errors: Partial<Record<string, Error>> }) => {
+  if (!errors || Object.keys(errors).length < 1) return
+
   log.__raw("\n")
   log.__raw(boxen(
     Object.entries(errors)
