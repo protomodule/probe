@@ -3,18 +3,21 @@ import { VersionSettings } from "./modules/version"
 import { ChangelogSettings } from "./modules/changelog"
 import { MetricsSettings } from "./modules/metrics"
 import { RequestLoggingSettings } from "./modules/request-logging"
+import { TracingSettings } from "./modules/tracing"
 
 export type Settings =
   VersionSettings &
   ChangelogSettings &
   MetricsSettings &
   RequestLoggingSettings &
+  TracingSettings &
   {
     useVersion: boolean
     useChangelog: boolean
     useMetrics: boolean
     useRequestLogging: boolean
     useConsoleLog: boolean
+    useTracing: boolean
   }
 
 export type Options = OptionsFor<Settings>
@@ -24,6 +27,7 @@ export const withMetricsOnly: Options = Object.freeze({
   useChangelog: false,
   useMetrics: true,
   useRequestLogging: false,
+  useTracing: false,
 })
 
 export const withoutMetrics: Options = Object.freeze({
@@ -40,4 +44,8 @@ export const withoutRequestLogging: Options = Object.freeze({
 
 export const withoutConsoleLog: Options = Object.freeze({
   useConsoleLog: false,
+})
+
+export const withoutTracing: Options = Object.freeze({
+  useTracing: false,
 })
