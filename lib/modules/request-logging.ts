@@ -7,6 +7,7 @@ export const defaults = Object.freeze({
   requestLoggingMethod: defaultLogger.verbose,
   requestLoggingWarning: defaultLogger.warning,
   requestLoggingSlowRequest: 10e3,
+  requestLoggingTracing: true,
 })
 
 export type RequestLoggingSettings = Settings<typeof defaults>
@@ -35,7 +36,13 @@ export const middleware = (options: ReqeustLoggingOptions) => {
       const logger = isSlowRequest
         ? settings.requestLoggingWarning
         : settings.requestLoggingMethod
-      logger(req.method, req.originalUrl, `[${res.statusCode}]`, `${duration.toLocaleString()} ms`, isSlowRequest ? chalk.bgHex("#E2BD1B").black(` Slow request detected (> ${settings.requestLoggingSlowRequest.toLocaleString()} ms) `) : "")
+      logger(
+        `${settings.requestLoggingTracing && req.traceId ? `(${req.traceId}-${req.requestId}) `: ""}${req.method}`,
+        req.originalUrl,
+        `[${res.statusCode}]`,
+        `${duration.toLocaleString()} ms`,
+        isSlowRequest ? chalk.bgHex("#E2BD1B").black(` Slow request detected (> ${settings.requestLoggingSlowRequest.toLocaleString()} ms) `) : ""
+      )
     })
 
     next()

@@ -21,7 +21,6 @@ export interface Logger {
 
 interface LogConfigEnv {
   LOG_LEVEL: string
-  LOG_REQUESTS: boolean
   LOG_CALLER: boolean
   LOG_TIMESTAMP: boolean
 }

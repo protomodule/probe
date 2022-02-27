@@ -32,6 +32,7 @@ const defaults = {
   }),
   LOG_REQUESTS: yesNo({ default: false }),
   LOG_CALLER: yesNo({ default: false }),
+  LOG_TRACING: yesNo({ default: true }),
   LOG_TIMESTAMP: yesNo({ default: false }),
   PORT: port(),
 }
