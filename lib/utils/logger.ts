@@ -25,13 +25,37 @@ export interface Logger {
   error(...args: any[]): Logger
 }
 
-export class Log implements Logger {
-  private log = (level: LogLevel, ...args: any[]) => {
-    const e = new Error()
-    const match = e.stack && /\((.*):(\d+):(\d+)\)$/.exec(e.stack.split("\n")[3]);
-    const caller = `${match && match[0]}`.slice(1,-1).replace(`${process.cwd()}/`, "")
+interface LogConfigEnv {
+  LOG_LEVEL: string
+  LOG_REQUESTS: boolean
+  LOG_CALLER: boolean
+  LOG_TIMESTAMP: boolean
+}
 
-    process.stdout.write(`[${new Date().toISOString().substring(11, 23)}] ${Pretty[level].icon} ${caller} ${chalk.hex(Pretty[level].color)(LogLevel[level].toUpperCase())} `)
+export class Log implements Logger {
+  private config: LogConfigEnv
+
+  constructor(config: LogConfigEnv) {
+    this.config = config
+  }
+
+  private callerFile = (): string | undefined => {
+    if (!this.config.LOG_CALLER) return undefined
+
+    const e = new Error()
+    const match = e.stack && /\((.*):(\d+):(\d+)\)$/.exec(e.stack.split("\n")[4]);
+    return `${match && match[0]}`.slice(1,-1).replace(`${process.cwd()}/`, "")
+  }
+
+  private log = (level: LogLevel, ...args: any[]) => {
+    const prefixes = [
+      !!this.config.LOG_TIMESTAMP && `[${new Date().toISOString().substring(11, 23)}]`,
+      Pretty[level].icon,
+      this.callerFile(),
+      chalk.hex(Pretty[level].color)(LogLevel[level].toUpperCase())
+    ]
+
+    process.stdout.write(`${prefixes.filter(p => !!p).join(" ")} `)
     process.stdout.write(args
       .map(arg => {
         switch (typeof arg) {
@@ -78,4 +102,9 @@ export class Log implements Logger {
   }
 }
 
-export const log = new Log()
+export const log = new Log({
+  LOG_LEVEL: process.env.LOG_LEVEL || "verbose",
+  LOG_REQUESTS: ["yes", "y", "1", "true", "t"].includes(process.env.LOG_REQUEST || "no"),
+  LOG_CALLER: ["yes", "y", "1", "true", "t"].includes(process.env.LOG_CALLER || "no"),
+  LOG_TIMESTAMP: ["yes", "y", "1", "true", "t"].includes(process.env.LOG_CALLER || "no"),
+})

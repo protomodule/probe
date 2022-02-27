@@ -1,15 +1,26 @@
 import "dotenv/config"
 import chalk from "chalk"
 import boxen from "boxen"
-import { ValidatorSpec, cleanEnv, str, port, CleanedEnvAccessors, makeValidator } from "envalid"
+import { ValidatorSpec, cleanEnv, str, port, CleanedEnvAccessors, makeValidator, bool } from "envalid"
 import { log, LogLevel } from "./logger"
 
 export const yesNo = makeValidator(x => {
-  switch (x) {
-    case "yes": return true
-    case "no": return false
+  switch (`${x}`) {
+    case "yes":
+    case "y":
+    case "1":
+    case "true":
+    case "t":
+      return true
+    
+    case "no":
+    case "n":
+    case "0":
+    case "false":
+    case "f":
+      return false
   }
-  throw new Error(`Input "${x}" invalid. Expected value of "yes" or "no"`)
+  throw new Error(`Input "${x}" invalid. Expected value of "yes" | "y" | "1" | "true" | "t" or "no" | "n" | "0" | "false" | "f"`)
 })
 
 export type Schema<T> = { [K in keyof T]: ValidatorSpec<T[K]>; }
@@ -19,6 +30,9 @@ const defaults = {
     choices: Object.keys(LogLevel).filter(value => isNaN(Number(value))),
     devDefault: LogLevel.verbose,
   }),
+  LOG_REQUESTS: yesNo({ default: false }),
+  LOG_CALLER: yesNo({ default: false }),
+  LOG_TIMESTAMP: yesNo({ default: false }),
   PORT: port(),
 }
 
@@ -61,7 +75,7 @@ export const fromDefault = <E>(env: E) => {
   )
 }
 
-type Defaults = {
+export type Defaults = {
   [K in keyof typeof defaults]: (typeof defaults[K] extends ValidatorSpec<infer V> ? V : never)
 } & { NODE_ENV: string } & CleanedEnvAccessors
 
