@@ -1,7 +1,8 @@
 import fs from "fs"
 import path from "path"
-import { Router } from "express"
+import { Response, Router } from "express"
 import { Options, Settings } from "../utils/options"
+import { template } from "../resources/version-not-found"
 
 type Version = {
   version: string
@@ -23,11 +24,21 @@ export const defaults = Object.freeze({
 export type VersionSettings = Settings<typeof defaults>
 export type VersionOptions = Options<typeof defaults>
 
-const findVersionFile = (dir: string, filename: string): string | undefined => {
+const findFile = (dir: string, filename: string): string | undefined => {
   const search = path.join(dir, filename)
   return fs.existsSync(search)
     ? search
-    : path.dirname(dir) === dir ? undefined : findVersionFile(path.dirname(dir), filename)
+    : path.dirname(dir) === dir ? undefined : findFile(path.dirname(dir), filename)
+}
+
+const notFound = (data: any, res: Response) => {
+  if (!data) {
+    const packageFile = findFile(require?.main?.filename || process.cwd(), "package.json")
+    return res
+      .status(404)
+      .set("Content-Type", "text/html")
+      .send(template(packageFile ? require(packageFile).name : "-"))
+  }
 }
 
 export const router = (options: VersionOptions) => {
@@ -36,10 +47,16 @@ export const router = (options: VersionOptions) => {
     ...options
   }
 
-  const versionFile = findVersionFile(require?.main?.filename || process.cwd(), settings.versionFile)
+  const versionFile = findFile(require?.main?.filename || process.cwd(), settings.versionFile)
   const versionInfo: Version | undefined = versionFile && require(versionFile)
 
   return Router()
-    .get(settings.versionRoute, (_, res) => res.json(versionInfo) )
-    .get(settings.versionShort, (_, res) => res.send(versionInfo?.version) )
+    .get(settings.versionRoute, (_, res) => {
+      if(notFound(versionInfo, res)) return
+      return res.json(versionInfo)
+    })
+    .get(settings.versionShort, (_, res) => {
+      if(notFound(versionInfo, res)) return
+      return res.send(versionInfo?.version)
+    })
 }
