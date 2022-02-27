@@ -1,3 +1,4 @@
+import chalk from "chalk"
 import { Request, Response, NextFunction } from "express"
 import { log as defaultLogger } from "../utils/logger"
 import { Options, Settings } from "../utils/options"
@@ -34,7 +35,7 @@ export const middleware = (options: ReqeustLoggingOptions) => {
       const logger = isSlowRequest
         ? settings.requestLoggingWarning
         : settings.requestLoggingMethod
-      logger(req.method, req.originalUrl, `[${res.statusCode}]`, `${duration.toLocaleString()} ms`)
+      logger(req.method, req.originalUrl, `[${res.statusCode}]`, `${duration.toLocaleString()} ms`, isSlowRequest ? chalk.bgHex("#E2BD1B").black(` Slow request detected (> ${settings.requestLoggingSlowRequest.toLocaleString()} ms) `) : "")
     })
 
     next()

@@ -1,13 +1,7 @@
 import chalk from "chalk"
 import util from "util"
-
-export enum LogLevel {
-  verbose = "verbose",
-  debug = "debug",
-  info = "info",
-  warning = "warning",
-  error = "error",
-}
+import { fromDefault } from "./config"
+import { LogLevel } from "../common/log-level"
 
 const Pretty: { [key in LogLevel]: { color: string, icon: string } } = {
   [LogLevel.verbose]: { color: "#D1D1D0", icon: "⚪️" },
@@ -102,9 +96,4 @@ export class Log implements Logger {
   }
 }
 
-export const log = new Log({
-  LOG_LEVEL: process.env.LOG_LEVEL || "verbose",
-  LOG_REQUESTS: ["yes", "y", "1", "true", "t"].includes(process.env.LOG_REQUEST || "no"),
-  LOG_CALLER: ["yes", "y", "1", "true", "t"].includes(process.env.LOG_CALLER || "no"),
-  LOG_TIMESTAMP: ["yes", "y", "1", "true", "t"].includes(process.env.LOG_CALLER || "no"),
-})
+export const log = new Log(fromDefault(process.env, false))

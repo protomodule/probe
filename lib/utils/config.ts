@@ -2,7 +2,7 @@ import "dotenv/config"
 import chalk from "chalk"
 import boxen from "boxen"
 import { ValidatorSpec, cleanEnv, str, port, CleanedEnvAccessors, makeValidator, bool } from "envalid"
-import { log, LogLevel } from "./logger"
+import { LogLevel } from "../common/log-level"
 
 export const yesNo = makeValidator(x => {
   switch (`${x}`) {
@@ -39,8 +39,7 @@ const defaults = {
 const reporter = ({ errors } : { errors: Partial<Record<string, Error>> }) => {
   if (!errors || Object.keys(errors).length < 1) return
 
-  log.__raw("\n")
-  log.__raw(boxen(
+  console.error("Fatal misconfiguration in environment variables\n\n\n" + boxen(
     Object.entries(errors)
       .map(([key, error]) => `${chalk.blue(key)}: ${error?.message === "undefined" ? "Missing environment variable" : error?.message}`)
       .join("\n"),
@@ -50,8 +49,7 @@ const reporter = ({ errors } : { errors: Partial<Record<string, Error>> }) => {
       padding: 1,
       borderStyle: "round"
     }
-  ))
-  log.__raw(chalk.yellow(`\nExiting with error code 519`))
+  ) + chalk.yellow(`\n\n\nExiting with error code 519`))
   process.exit(519)
 }
 
@@ -62,16 +60,16 @@ export enum Env {
   production = "production",
 }
 
-export const fromEnv = <T>(schema?: Schema<T>) => schema ? from(Env, schema) : fromDefault(Env)
+export const fromEnv = <T>(schema?: Schema<T>): Readonly<Defaults & T> => schema ? from(Env, schema) : fromDefault(Env) as Readonly<Defaults & T>
 
-export const fromDefault = <E>(env: E) => {
+export const fromDefault = <E>(env: E, reportError = true) => {
   return cleanEnv(
     process.env,
     {
       NODE_ENV: str({ choices: Object.keys(env).filter(value => isNaN(Number(value))) }),
       ...defaults
     },
-    { reporter }
+    { reporter: reportError ? reporter : () => {} }
   )
 }
 
