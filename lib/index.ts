@@ -5,6 +5,7 @@ import { defaults as metricsDefaults, middleware as metricsMiddleware } from "./
 import { defaults as requestLoggingDefaults, middleware as requestLoggingMiddleware } from "./modules/request-logging"
 import { defaults as tracingDefaults, middleware as tracingMiddleware } from "./modules/tracing"
 import { Settings, Options } from "./settings"
+import { TRUE_VALS } from "./utils/config"
 
 export { from, Env, fromEnv, yesNo } from "./utils/config"
 export { str, bool, num, email, host, port, url, json  } from "envalid"
@@ -25,9 +26,14 @@ export const withDefaults: Settings = Object.freeze({
 })
 
 export const useProtomoduleIn = (app: any, ...options: Options[]) => {
-  const settings = options.reduce<Settings>((acc, opt) => ({ ...acc, ...opt}), withDefaults)
+  const settings = {
+    // Load Defaults and overwrite with options
+    ...options.reduce<Settings>((acc, opt) => ({ ...acc, ...opt}), withDefaults),
 
-  // TODO - Accept env variables here
+    // Overwrite defaults/options with environment variable (when specified)
+    ...(process.env.LOG_REQUESTS ? { useRequestLogging: TRUE_VALS.includes(process.env.LOG_REQUESTS) } : undefined),
+    ...(process.env.LOG_TRACING ? { requestLoggingTracing: TRUE_VALS.includes(process.env.LOG_TRACING) } : undefined),
+  }
 
   init(settings)
   

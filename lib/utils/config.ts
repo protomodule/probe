@@ -4,37 +4,33 @@ import boxen from "boxen"
 import { ValidatorSpec, cleanEnv, str, port, CleanedEnvAccessors, makeValidator, bool } from "envalid"
 import { LogLevel } from "../common/log-level"
 
+export const TRUE_VALS = ["yes", "y", "true", "t", "1"]
+export const FALSE_VALS = ["no", "n", "false", "f", "0"]
+
 export const yesNo = makeValidator(x => {
-  switch (`${x}`) {
-    case "yes":
-    case "y":
-    case "1":
-    case "true":
-    case "t":
-      return true
-    
-    case "no":
-    case "n":
-    case "0":
-    case "false":
-    case "f":
-      return false
-  }
-  throw new Error(`Input "${x}" invalid. Expected value of "yes" | "y" | "1" | "true" | "t" or "no" | "n" | "0" | "false" | "f"`)
+  const input = `${x}`
+  if (TRUE_VALS.includes(input)) return true
+  if (FALSE_VALS.includes(input)) return false
+  throw new Error(`Input "${input}" invalid. Expected value of ${TRUE_VALS.join(" | ")} or ${FALSE_VALS.join(" | ")}`)
 })
 
 export type Schema<T> = { [K in keyof T]: ValidatorSpec<T[K]>; }
 
 const defaults = {
+  // Globally required
+  PORT: port(),
+
+  // Use directly in logger
   LOG_LEVEL: str({
     choices: Object.keys(LogLevel).filter(value => isNaN(Number(value))),
     devDefault: LogLevel.verbose,
   }),
-  LOG_REQUESTS: yesNo({ default: false }),
   LOG_CALLER: yesNo({ default: false }),
-  LOG_TRACING: yesNo({ default: true }),
   LOG_TIMESTAMP: yesNo({ default: false }),
-  PORT: port(),
+
+  // Use in request logger
+  LOG_REQUESTS: yesNo({ default: false }),
+  LOG_TRACING: yesNo({ default: true }),
 }
 
 const reporter = ({ errors } : { errors: Partial<Record<string, Error>> }) => {
@@ -70,7 +66,7 @@ export const fromDefault = <E>(env: E, reportError = true) => {
       NODE_ENV: str({ choices: Object.keys(env).filter(value => isNaN(Number(value))) }),
       ...defaults
     },
-    { reporter: reportError ? reporter : () => {} }
+    { reporter: reportError ? reporter : () => undefined }
   )
 }
 

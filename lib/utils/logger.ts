@@ -3,13 +3,21 @@ import util from "util"
 import { fromDefault } from "./config"
 import { LogLevel } from "../common/log-level"
 
-const Pretty: { [key in LogLevel]: { color: string, icon: string } } = {
+const LEVEL_PRIO: { [key in LogLevel]: number } = Object.freeze(Object.keys(LogLevel).reduce((acc, level, index) => ({ ...acc, [level]: index }), {
+  [LogLevel.verbose]: 0,
+  [LogLevel.debug]:   0,
+  [LogLevel.info]:    0,
+  [LogLevel.warning]: 0,
+  [LogLevel.error]:   0,
+}))
+
+const PRETTY: { [key in LogLevel]: { color: string, icon: string } } = Object.freeze({
   [LogLevel.verbose]: { color: "#D1D1D0", icon: "⚪️" },
   [LogLevel.debug]:   { color: "#31C372", icon: "🟢" },
   [LogLevel.info]:    { color: "#32C1E9", icon: "🔵" },
   [LogLevel.warning]: { color: "#E2BD1B", icon: "🟠" },
   [LogLevel.error]:   { color: "#FF3B74", icon: "🔴" },
-}
+})
 
 export interface Logger {
   verbose(...args: any[]): Logger
@@ -27,9 +35,14 @@ interface LogConfigEnv {
 
 export class Log implements Logger {
   private config: LogConfigEnv
+  private logLevel: LogLevel
 
   constructor(config: LogConfigEnv) {
     this.config = config
+    this.logLevel = LogLevel.verbose
+
+    try { this.logLevel = LogLevel[config.LOG_LEVEL as keyof typeof LogLevel] }
+    catch (e) { this.logLevel = LogLevel.verbose }
   }
 
   private callerFile = (): string | undefined => {
@@ -42,11 +55,13 @@ export class Log implements Logger {
   }
 
   private log = (level: LogLevel, ...args: any[]) => {
+    if (LEVEL_PRIO[level] < LEVEL_PRIO[this.logLevel]) return this 
+
     const prefixes = [
       !!this.config.LOG_TIMESTAMP && `[${new Date().toISOString().substring(11, 23)}]`,
-      Pretty[level].icon,
+      PRETTY[level].icon,
       this.callerFile(),
-      chalk.hex(Pretty[level].color)(LogLevel[level].toUpperCase())
+      chalk.hex(PRETTY[level].color)(LogLevel[level].toUpperCase())
     ]
 
     process.stdout.write(`${prefixes.filter(p => !!p).join(" ")} `)

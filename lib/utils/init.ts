@@ -18,7 +18,7 @@ export const init = (settings: Settings) => {
           const caller = `${match && match[0]}`.replace(`${process.cwd()}/`, "")
 
           process.stdout.write(`\n${boxen(
-            `Consider using ${chalk.green("log.verbose")} from ${chalk.green("import { log } from \"@protomodule/probe\"")}\nCheck ${chalk.underline(caller)}`,
+            `Consider using ${chalk.green("log.debug")} from ${chalk.green("import { log } from \"@protomodule/probe\"")}\nCheck ${chalk.underline(caller)}`,
             {
               title: chalk.bgRed(` ${chalk.bold(" console.log")} has been called directly. `),
               titleAlignment: 'center',
