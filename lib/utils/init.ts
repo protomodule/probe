@@ -14,8 +14,8 @@ export const init = (settings: Settings) => {
       console.log = function (..._: any[]) {
         if (!used) {
           const e = new Error()
-          const match = e.stack && /\((.*):(\d+):(\d+)\)$/.exec(e.stack.split("\n")[2]);
-          const caller = `${match && match[0]}`.slice(1,-1).replace(`${process.cwd()}/`, "")
+          const match = e.stack && /(\/.*):(\d+):(\d+)$/.exec(e.stack.split("\n")[2]);
+          const caller = `${match && match[0]}`.replace(`${process.cwd()}/`, "")
 
           process.stdout.write(`\n${boxen(
             `Consider using ${chalk.green("log.verbose")} from ${chalk.green("import { log } from \"@protomodule/probe\"")}\nCheck ${chalk.underline(caller)}`,

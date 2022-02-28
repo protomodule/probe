@@ -36,8 +36,9 @@ export class Log implements Logger {
     if (!this.config.LOG_CALLER) return undefined
 
     const e = new Error()
-    const match = e.stack && /\((.*):(\d+):(\d+)\)$/.exec(e.stack.split("\n")[4]);
-    return `${match && match[0]}`.slice(1,-1).replace(`${process.cwd()}/`, "")
+    const consoleLog = e.stack && /((\/.*):(\d+):(\d+))\)?$/.exec(e.stack.split("\n")[5]);
+    const match = consoleLog || e.stack && /((\/.*):(\d+):(\d+))\)?$/.exec(e.stack.split("\n")[4]);
+    return `${match && match[1]}`.replace(`${process.cwd()}/`, "")
   }
 
   private log = (level: LogLevel, ...args: any[]) => {

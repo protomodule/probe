@@ -27,6 +27,8 @@ export const withDefaults: Settings = Object.freeze({
 export const useProtomoduleIn = (app: any, ...options: Options[]) => {
   const settings = options.reduce<Settings>((acc, opt) => ({ ...acc, ...opt}), withDefaults)
 
+  // TODO - Accept env variables here
+
   init(settings)
   
   if (settings.useTracing) app.use(tracingMiddleware(settings))
