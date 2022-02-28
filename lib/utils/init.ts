@@ -2,7 +2,10 @@ import chalk from "chalk"
 import boxen from "boxen"
 import { log } from "./logger"
 import { Settings } from "../settings"
-const version = require("../../package.json").version
+import { findFile } from "./find-file"
+
+const packageFile = findFile(__dirname, "package.json")
+const version = require(packageFile || "../../package.json").version
 
 export const init = (settings: Settings) => {
   process.stdout.write(Buffer.from(`\n\n< / >            P R O T O M O D U L E           v${version}\n`));

@@ -1,8 +1,7 @@
-import fs from "fs"
-import path from "path"
 import { Response, Router } from "express"
 import { Options, Settings } from "../utils/options"
 import { template } from "../resources/version-not-found"
+import { findFile } from "../utils/find-file"
 
 type Version = {
   version: string
@@ -23,13 +22,6 @@ export const defaults = Object.freeze({
 
 export type VersionSettings = Settings<typeof defaults>
 export type VersionOptions = Options<typeof defaults>
-
-const findFile = (dir: string, filename: string): string | undefined => {
-  const search = path.join(dir, filename)
-  return fs.existsSync(search)
-    ? search
-    : path.dirname(dir) === dir ? undefined : findFile(path.dirname(dir), filename)
-}
 
 const notFound = (data: any, res: Response) => {
   if (!data) {
