@@ -31,6 +31,7 @@ interface LogConfigEnv {
   LOG_LEVEL: string
   LOG_CALLER: boolean
   LOG_TIMESTAMP: boolean
+  LOG_PID: boolean
 }
 
 export class Log implements Logger {
@@ -60,6 +61,7 @@ export class Log implements Logger {
     const prefixes = [
       !!this.config.LOG_TIMESTAMP && `[${new Date().toISOString().substring(11, 23)}]`,
       PRETTY[level].icon,
+      !!this.config.LOG_PID && `(${process.pid})`,
       this.callerFile(),
       chalk.hex(PRETTY[level].color)(LogLevel[level].toUpperCase())
     ]

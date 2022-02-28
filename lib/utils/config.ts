@@ -27,6 +27,7 @@ const defaults = {
   }),
   LOG_CALLER: yesNo({ default: false }),
   LOG_TIMESTAMP: yesNo({ default: false }),
+  LOG_PID: yesNo({ default: false }),
 
   // Use in request logger
   LOG_REQUESTS: yesNo({ default: false }),
@@ -78,6 +79,7 @@ export const from = <E, T>(env: E, schema: Schema<T>): Readonly<Defaults & T> =>
   return cleanEnv(
     process.env,
     {
+      NODE_ENV: str({ choices: Object.keys(env).filter(value => isNaN(Number(value))) }),
       ...defaults,
       ...schema
     },
