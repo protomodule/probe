@@ -47,7 +47,7 @@ Must be explicitly used.
  * [Environment variables](docs/config.md)
  * [Logging](docs/log.md)
 
-## Configuration
+## Configuration options
 
 Modules can be configured in the `useProtomoduleIn(...)` call. First parameter of this function takes an Express app. Through the [**rest** arguments](https://www.typescriptlang.org/docs/handbook/type-compatibility.html#optional-parameters-and-rest-parameters) an arbitrary number of options can be specified.
 
@@ -58,6 +58,16 @@ Be aware that all options are merged in the following priority:
  1. Specific environment variables overwrite
  1. Options as parameters (parameters are merged from first to last)
  1. Default fallback values
+
+*Example configuration*
+```
+import { useProtomoduleIn, withoutRequestLogging } from "@protomodule/probe"
+
+...
+useProtomoduleIn(app, withoutRequestLogging)
+```
+
+Read more about available options in the [options](docs/options.md) section.
 
 ## Credits
 
