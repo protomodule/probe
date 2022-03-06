@@ -12,7 +12,7 @@
  * Import your custom singleton config in other modules as needed
 
 _config.ts:_
-```
+```js
 import { fromEnv, str } from "@protomodule/probe"
 
 export const config = fromEnv({
@@ -21,7 +21,7 @@ export const config = fromEnv({
 ```
 
 _your-module.ts:_
-```
+```js
 import { config } from "./config.ts"
 
 const custom = config.CUSTOM_VAR
@@ -33,7 +33,7 @@ For more information on how to specify the schema for your environment variables
 
 For future compatibility *Protomodule | Probe* exports all supported validators:
 
-```
+```js
 import { yesNo, str, bool, num, email, host, port, url, json } from "@protomodule/probe"
 ```
 
@@ -52,7 +52,7 @@ When instantiating your config singleton by calling `fromEnv(...)` default envir
 
 You can provide your own enum containing your environments by instantiating the config singleton with `from(..., ...)`:
 
-```
+```js
 import { from } from "@protomodule/probe"
 
 enum MyEnv {

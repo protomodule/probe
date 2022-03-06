@@ -8,7 +8,7 @@ The logger implemented in *Protomodule | Probe* provide common log leves which c
 
 ### Usage
 
-```
+```js
 import { log } from "@protomodule/probe"
 
 log.debug("Your message goes here")
@@ -34,7 +34,7 @@ If you initialize your app by calling `useProtomoduleIn` *Protomodule | Probe* w
 
 If you want to disable the capturing of `console.log` specify it as an option to the `useProtomoduleIn` call:
 
-```
+```js
 import { useProtomoduleIn, withoutConsoleLog } from "@protomodule/probe"
 
 ...

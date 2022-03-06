@@ -9,7 +9,7 @@
 
 Install *Protomodule | Probe* by running:
 
-```
+```console
 $ npm install --save @protomodule/probe
 ```
 
@@ -17,7 +17,7 @@ Integrate *Protomodule | Probe* into your express setup with a single line of co
 
 **⚠️ Be aware: Add Protomodule | Probe before you add all your other routes/middlewares in order to function correctly. All routes/middlewares added before calling the Protomodule initializer are exluded from protomodules features.**
 
-```
+```js
 import { useProtomoduleIn } from "@protomodule/probe"
 
 const app = express()
@@ -60,7 +60,7 @@ Be aware that all options are merged in the following priority:
  1. Default fallback values
 
 *Example configuration*
-```
+```js
 import { useProtomoduleIn, withoutRequestLogging } from "@protomodule/probe"
 
 ...

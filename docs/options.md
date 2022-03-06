@@ -16,7 +16,7 @@ These are only predefined sets of options. You can pass in plain objects with co
 
 To initialize *Protomodule | Probe* without request logging and without overwriting `console.log` and exposing metrics on a custom endpoint use this initialization:
 
-```
+```js
 import { useProtomoduleIn, withoutRequestLogging, withoutConsoleLog } from "@protomodule/probe"
 
 const app = express()
