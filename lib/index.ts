@@ -8,7 +8,7 @@ import { Settings, Options } from "./settings"
 import { TRUE_VALS } from "./utils/config"
 
 export { from, Env, fromEnv, yesNo } from "./utils/config"
-export { str, bool, num, email, host, port, url, json  } from "envalid"
+export { str, bool, num, email, host, port, url, json } from "envalid"
 export { log } from "./utils/logger"
 export { withMetricsOnly, withoutChangelog, withoutMetrics, withoutRequestLogging, withoutConsoleLog } from "./settings"
 export const withDefaults: Settings = Object.freeze({

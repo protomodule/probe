@@ -1,32 +1,51 @@
-# ⚛️ Protomodule - Probe
-**for nodejs**
+# ⚛️ Protomodule | Probe
+**for NodeJS / Express based applications**
 
-Web browsers give away a lot of information that might seem irrelevant but can be used to create a fingerprint to identify people with a certain degree of accuracy.
+*Protomodule* is a set of common practices which span from coding over CI/CD to production deployments. Every utility within Protomodule is able to provide core functionality as a standalone tool. All Protomodule utilities are interoperable to get the most out of your DevOps pipeline with minimum effort.
 
-## Usage
+*Probe* is the NodeJS module to integrate Protomodules principles into [NodeJS](https://nodejs.org/en/) / [Express](http://expressjs.com) based applications.
 
-### Environment variables
+## Quick start guide
 
- * Create a `config.ts` file in your project
- * Export instance of your config as a singleton module by calling `from` or `fromEnv`
- * Add environment variables to the schema
- * Import your custom config in every other module you need to
+Install *Protomodule | Probe* by running:
 
 ```
-import { fromEnv, str } from "./utils/config"
-
-export const config = fromEnv({
-  CUSTOM_VAR: str()
-})
+$ npm install --save @protomodule/probe
 ```
 
-For more information on how to specify the schema for your environment variables continue reading [here](https://github.com/af/envalid). In any other module you can import the singleton config:
+Integrate *Protomodule | Probe* into your express setup with a single line of code:
+
+**⚠️ Be aware: Add Protomodule | Probe before you add all your other routes/middlewares in order to function correctly. All routes/middlewares added before calling the Protomodule initializer are exluded from protomodules features.**
 
 ```
-import { config } from "./config"
+import { useProtomoduleIn } from "@protomodule/probe"
 
-const customVar: string = config.CUSTOM_VAR
+const app = express()
+useProtomoduleIn(app)
+
+// Add your routes here
 ```
+
+## Features
+
+*Protomodule | Probe* provides two kinds of features:
+
+### Modules
+ 
+Modules are automatically applied middlewares for express. The may be deactivated by configuration.
+
+ * [Version](docs/version.md)
+ * [Changelog](docs/changelog.md)
+ * [Metrics](docs/metrics.md)
+ * [Request Logging](docs/request-logging.md)
+ * [Request Tracing](docs/tracing.md)
+ 
+### Utilities
+
+Must be explicitly used.
+
+ * [Environment variables](docs/config.md)
+ * [Logging](docs/log.md)
 
 ## Credits
 
