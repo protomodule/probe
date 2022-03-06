@@ -21,6 +21,7 @@
   "types": "dist/index.d.ts",
   "files": [
     "LICENSE",
+    "package.json",
     "dist/"
   ],
   "scripts": {
