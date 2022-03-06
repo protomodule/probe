@@ -5,6 +5,8 @@
 
 *Probe* is the NodeJS module to integrate Protomodules principles into [NodeJS](https://nodejs.org/en/) / [Express](http://expressjs.com) based applications.
 
+**🚨 This library is under heavy development.** Be sure to check back for breaking changes in future releases.
+
 ## Quick start guide
 
 Install *Protomodule | Probe* by running:
@@ -15,7 +17,7 @@ $ npm install --save @protomodule/probe
 
 Integrate *Protomodule | Probe* into your express setup with a single line of code:
 
-**⚠️ Be aware: Add Protomodule | Probe before you add all your other routes/middlewares in order to function correctly. All routes/middlewares added before calling the Protomodule initializer are exluded from protomodules features.**
+**⚠️ Be aware: Add Protomodule | Probe before you add all your other routes/middlewares in order to function correctly.** All routes/middlewares added before calling the Protomodule initializer are exluded from protomodules features.
 
 ```js
 import { useProtomoduleIn } from "@protomodule/probe"
