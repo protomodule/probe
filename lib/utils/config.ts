@@ -53,6 +53,7 @@ const reporter = ({ errors } : { errors: Partial<Record<string, Error>> }) => {
 
 export enum Env {
   local = "local",
+  test = "test",
   development = "development",
   staging = "staging",
   production = "production",
