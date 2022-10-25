@@ -43,7 +43,10 @@ export class Log implements Logger {
     this.logLevel = LogLevel.verbose
 
     try { this.logLevel = LogLevel[config.LOG_LEVEL as keyof typeof LogLevel] }
-    catch (e) { this.logLevel = LogLevel.verbose }
+    catch (e) {
+      this.logLevel = LogLevel.verbose
+      this.warning(`Given LOG_LEVEL is invalid - using fallback ${chalk.bold.hex(PRETTY[this.logLevel].color)(this.logLevel)}. Valid options are ${Object.keys(LogLevel).map(level => chalk.bold.hex(PRETTY[level as keyof typeof LogLevel].color)(level)).join(", ")}`)
+    }
   }
 
   private callerFile = (): string | undefined => {
