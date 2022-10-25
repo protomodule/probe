@@ -61,7 +61,7 @@ export enum Env {
 
 export const fromEnv = <T>(schema?: Schema<T>): Readonly<Defaults & T> => schema ? from(Env, schema) : fromDefault(Env) as Readonly<Defaults & T>
 
-export const fromDefault = <E>(env: E, reportError = true) => {
+export const fromDefault = <E extends {}>(env: E, reportError = true) => {
   return cleanEnv(
     process.env,
     {
@@ -76,7 +76,7 @@ export type Defaults = {
   [K in keyof typeof defaults]: (typeof defaults[K] extends ValidatorSpec<infer V> ? V : never)
 } & { NODE_ENV: string } & CleanedEnvAccessors
 
-export const from = <E, T>(env: E, schema: Schema<T>): Readonly<Defaults & T> => {
+export const from = <E extends {}, T>(env: E, schema: Schema<T>): Readonly<Defaults & T> => {
   return cleanEnv(
     process.env,
     {

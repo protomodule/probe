@@ -7,7 +7,7 @@ export const defaults = Object.freeze({
   requestLoggingMethod: defaultLogger.verbose,
   requestLoggingWarning: defaultLogger.warning,
   requestLoggingSlowRequest: 10e3,
-  requestLoggingTracing: true,
+  requestLoggingTracing: true as boolean,
 })
 
 export type RequestLoggingSettings = Settings<typeof defaults>
