@@ -1,6 +1,7 @@
-import { Response, Router } from "express"
+import { Request, Response, Router } from "express"
 import { Options, Settings } from "../utils/options"
 import { template } from "../resources/version-not-found"
+import { template as shield } from "../resources/version-shield"
 import { findFile } from "../utils/find-file"
 
 type Version = {
@@ -18,6 +19,7 @@ export const defaults = Object.freeze({
   versionFile: "version.json",
   versionRoute: "/version",
   versionShort: "/__v",
+  versionShield: "/__shield",
 })
 
 export type VersionSettings = Settings<typeof defaults>
@@ -50,5 +52,12 @@ export const router = (options: VersionOptions) => {
     .get(settings.versionShort, (_, res) => {
       if(notFound(versionInfo, res)) return
       return res.send(versionInfo?.version)
+    })
+    .get(settings.versionShield, (req: Request<{docker: string}>, res) => {
+      if(notFound(versionInfo, res)) return
+      const formatEnv = (environment: string) => environment.charAt(0).toUpperCase() + environment.slice(1)
+      return res
+        .set("Content-Type", "image/svg+xml")
+        .send(shield(`${req.query.docker !== undefined ? "🐳 " : ""}${formatEnv(process.env.ENVIRONMENT || process.env.NODE_ENV || "Unknown")}`, req.query.docker !== undefined ? versionInfo?.docker_tag : versionInfo?.version))
     })
 }
