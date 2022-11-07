@@ -55,9 +55,11 @@ export const router = (options: VersionOptions) => {
     })
     .get(settings.versionShield, (req: Request<{docker: string}>, res) => {
       if(notFound(versionInfo, res)) return
-      const formatEnv = (environment: string) => environment.charAt(0).toUpperCase() + environment.slice(1)
+      const formatEnv = (environment: string) => environment.charAt(0).toUpperCase() + environment.slice(1).toLowerCase()
       return res
         .set("Content-Type", "image/svg+xml")
-        .send(shield(`${req.query.docker !== undefined ? "🐳 " : ""}${formatEnv(process.env.ENVIRONMENT || process.env.NODE_ENV || "Unknown")}`, req.query.docker !== undefined ? versionInfo?.docker_tag : versionInfo?.version))
+        .set("Cache-Control", "no-cache")
+        .set("Pragma", "no-cache")
+        .send(shield(`${versionInfo?.docker_tag !== undefined ? "🏷️ " : ""}${formatEnv(process.env.ENVIRONMENT || process.env.NODE_ENV || "Unknown")}`, versionInfo?.docker_tag || versionInfo?.version))
     })
 }
