@@ -35,14 +35,18 @@ const notFound = (data: any, res: Response) => {
   }
 }
 
+export const versionFromFile = (filename = defaults.versionFile): Version | undefined => {
+  const versionFile = findFile(require?.main?.filename || process.cwd(), filename)
+  return  versionFile && require(versionFile)
+}
+
 export const router = (options: VersionOptions) => {
   const settings: VersionSettings = {
     ...defaults,
     ...options
   }
 
-  const versionFile = findFile(require?.main?.filename || process.cwd(), settings.versionFile)
-  const versionInfo: Version | undefined = versionFile && require(versionFile)
+  const versionInfo = versionFromFile(settings.versionFile)
 
   return Router()
     .get(settings.versionRoute, (_, res) => {

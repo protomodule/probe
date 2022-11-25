@@ -7,6 +7,7 @@ import { defaults as tracingDefaults, middleware as tracingMiddleware } from "./
 import { Settings, Options } from "./settings"
 import { TRUE_VALS } from "./utils/config"
 
+export { versionFromFile } from "./modules/version"
 export { from, Env, fromEnv, yesNo } from "./utils/config"
 export { str, bool, num, email, host, port, url, json } from "envalid"
 export { log } from "./utils/logger"
