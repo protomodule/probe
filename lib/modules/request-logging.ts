@@ -6,6 +6,7 @@ import { Options, Settings } from "../utils/options"
 export const defaults = Object.freeze({
   requestLoggingMethod: defaultLogger.verbose,
   requestLoggingWarning: defaultLogger.warning,
+  requestLoggingError: defaultLogger.error,
   requestLoggingSlowRequest: 10e3,
   requestLoggingTracing: true as boolean,
 })
@@ -35,7 +36,13 @@ export const middleware = (options: ReqeustLoggingOptions) => {
       const isSlowRequest = duration > settings.requestLoggingSlowRequest
       const logger = isSlowRequest
         ? settings.requestLoggingWarning
-        : settings.requestLoggingMethod
+        : (res.statusCode >= 400 && res.statusCode < 500
+          ? settings.requestLoggingWarning
+          : (res.statusCode >= 500 && res.statusCode < 600
+            ? settings.requestLoggingError
+            : settings.requestLoggingMethod
+          )
+        )
       logger(
         `${settings.requestLoggingTracing && req.traceId ? `(${req.traceId}-${req.requestId}) `: ""}${req.method}`,
         req.originalUrl,
