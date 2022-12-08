@@ -64,6 +64,6 @@ export const router = (options: VersionOptions) => {
         .set("Content-Type", "image/svg+xml")
         .set("Cache-Control", "no-cache")
         .set("Pragma", "no-cache")
-        .send(shield(`${versionInfo?.docker_tag !== undefined ? "🏷️ " : ""}${formatEnv(process.env.ENVIRONMENT || process.env.NODE_ENV || "Unknown")}`, versionInfo?.docker_tag || versionInfo?.version))
+        .send(shield(`${!versionInfo?.docker_tag ? "🏷️ " : ""}${formatEnv(process.env.ENVIRONMENT || process.env.NODE_ENV || "Unknown")}`, versionInfo?.docker_tag || versionInfo?.version))
     })
 }
