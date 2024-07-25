@@ -34,10 +34,12 @@ export const useProtomoduleIn = (app: any, ...options: Options[]) => {
     // Overwrite defaults/options with environment variable (when specified)
     ...(process.env.LOG_REQUESTS ? { useRequestLogging: TRUE_VALS.includes(process.env.LOG_REQUESTS) } : undefined),
     ...(process.env.LOG_TRACING ? { requestLoggingTracing: TRUE_VALS.includes(process.env.LOG_TRACING) } : undefined),
+    ...(process.env.LOG_SLOW_BODY ? { requestLoggingLogBody: TRUE_VALS.includes(process.env.LOG_SLOW_BODY) } : undefined),
+    ...(process.env.LOG_SLOW_HEADERS ? { requestLoggingLogHeaders: TRUE_VALS.includes(process.env.LOG_SLOW_HEADERS) } : undefined),
   }
 
   init(settings)
-  
+
   if (settings.useTracing) app.use(tracingMiddleware(settings))
   if (settings.useVersion) app.use(versionRouter(settings))
   if (settings.useChangelog) app.use(changelogRouter(settings))
